@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Mail, Phone, MapPin, Send, Github, Linkedin, ArrowUpRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { motion, useInView } from "framer-motion";
 
 const ContactSection = () => {
   const { toast } = useToast();
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -53,26 +57,36 @@ const ContactSection = () => {
   ];
 
   return (
-    <section id="contact" className="py-24 lg:py-32 relative overflow-hidden">
+    <section id="contact" className="py-24 lg:py-32 relative overflow-hidden" ref={ref}>
       {/* Background */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-10"
-          style={{ background: 'radial-gradient(circle, hsl(173 80% 40%) 0%, transparent 70%)' }}
-        />
-      </div>
+      <motion.div 
+        className="absolute bottom-0 right-0 w-[600px] h-[600px] rounded-full blur-3xl opacity-10 pointer-events-none"
+        style={{ background: 'radial-gradient(circle, hsl(173 80% 40%) 0%, transparent 70%)' }}
+        animate={{ scale: [1, 1.2, 1] }}
+        transition={{ duration: 8, repeat: Infinity }}
+      />
       
       <div className="section-container relative z-10">
-        <div className="text-center mb-16">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
           <div className="section-badge inline-flex">Contact</div>
           <h2 className="section-title">
             Travaillons <span className="gradient-text">Ensemble</span>
           </h2>
           <div className="section-divider" />
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-20">
           {/* Contact Info */}
-          <div>
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
             <h3 className="font-heading text-2xl font-bold mb-6">
               Prenons contact
             </h3>
@@ -82,8 +96,14 @@ const ContactSection = () => {
             </p>
 
             <div className="space-y-5 mb-10">
-              {contactInfo.map((info) => (
-                <div key={info.label} className="flex items-center gap-4 group">
+              {contactInfo.map((info, index) => (
+                <motion.div 
+                  key={info.label} 
+                  className="flex items-center gap-4 group"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
+                >
                   <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                     <info.icon className="w-5 h-5 text-primary" />
                   </div>
@@ -101,38 +121,46 @@ const ContactSection = () => {
                       <p className="font-medium">{info.value}</p>
                     )}
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
 
             {/* Social Links */}
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.6 }}
+            >
               <p className="text-sm text-muted-foreground mb-4 font-medium">Retrouvez-moi sur</p>
               <div className="flex gap-4">
-                <a
-                  href="https://linkedin.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group w-14 h-14 rounded-xl bg-card border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary hover:scale-105 transition-all duration-300"
-                  aria-label="LinkedIn"
-                >
-                  <Linkedin size={22} />
-                </a>
-                <a
-                  href="https://github.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group w-14 h-14 rounded-xl bg-card border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary hover:scale-105 transition-all duration-300"
-                  aria-label="GitHub"
-                >
-                  <Github size={22} />
-                </a>
+                {[
+                  { href: "https://linkedin.com", icon: Linkedin, label: "LinkedIn" },
+                  { href: "https://github.com", icon: Github, label: "GitHub" },
+                ].map((social) => (
+                  <motion.a
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group w-14 h-14 rounded-xl bg-card border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-300"
+                    aria-label={social.label}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <social.icon size={22} />
+                  </motion.a>
+                ))}
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Contact Form */}
-          <div className="card-modern p-8">
+          <motion.div 
+            className="card-modern p-8"
+            initial={{ opacity: 0, x: 50 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          >
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid sm:grid-cols-2 gap-6">
                 <div>
@@ -199,10 +227,12 @@ const ContactSection = () => {
                 />
               </div>
 
-              <button
+              <motion.button
                 type="submit"
                 disabled={isSubmitting}
-                className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
+                className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+                whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
+                whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
               >
                 {isSubmitting ? (
                   <span className="flex items-center gap-2">
@@ -215,9 +245,9 @@ const ContactSection = () => {
                     Envoyer le message
                   </>
                 )}
-              </button>
+              </motion.button>
             </form>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

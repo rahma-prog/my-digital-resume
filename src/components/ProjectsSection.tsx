@@ -1,4 +1,6 @@
 import { ExternalLink, Github, ArrowUpRight } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
 const projects = [
   {
@@ -28,8 +30,11 @@ const projects = [
 ];
 
 const ProjectsSection = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   return (
-    <section id="projects" className="py-24 lg:py-32 bg-secondary/30 relative overflow-hidden">
+    <section id="projects" className="py-24 lg:py-32 bg-secondary/30 relative overflow-hidden" ref={ref}>
       {/* Background pattern */}
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
         style={{ 
@@ -39,25 +44,42 @@ const ProjectsSection = () => {
       />
       
       <div className="section-container relative z-10">
-        <div className="text-center mb-16">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
           <div className="section-badge inline-flex">Portfolio</div>
           <h2 className="section-title">
             Mes <span className="gradient-text">Projets</span>
           </h2>
           <div className="section-divider" />
-        </div>
+        </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {projects.map((project, index) => (
-            <div
+            <motion.div
               key={project.title}
-              className="group bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30 transition-all duration-500 hover:-translate-y-2 hover:shadow-xl"
+              className="group bg-card rounded-2xl overflow-hidden border border-border hover:border-primary/30 transition-all duration-500"
+              initial={{ opacity: 0, y: 50 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: index * 0.15 }}
+              whileHover={{ y: -8 }}
             >
               {/* Project Header with gradient */}
               <div className={`h-44 bg-gradient-to-br ${project.gradient} p-6 flex flex-col justify-end relative overflow-hidden`}>
                 {/* Decorative circles */}
-                <div className="absolute top-4 right-4 w-20 h-20 rounded-full bg-white/10 blur-xl" />
-                <div className="absolute bottom-4 left-4 w-16 h-16 rounded-full bg-white/10 blur-lg" />
+                <motion.div 
+                  className="absolute top-4 right-4 w-20 h-20 rounded-full bg-white/10 blur-xl"
+                  animate={{ scale: [1, 1.2, 1] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                />
+                <motion.div 
+                  className="absolute bottom-4 left-4 w-16 h-16 rounded-full bg-white/10 blur-lg"
+                  animate={{ scale: [1.2, 1, 1.2] }}
+                  transition={{ duration: 5, repeat: Infinity }}
+                />
                 
                 <h3 className="font-heading text-xl font-bold text-white relative z-10">
                   {project.title}
@@ -99,18 +121,26 @@ const ProjectsSection = () => {
 
                 {/* Actions */}
                 <div className="flex gap-3">
-                  <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-secondary hover:bg-primary hover:text-primary-foreground transition-all text-sm font-medium group/btn">
+                  <motion.button 
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-secondary hover:bg-primary hover:text-primary-foreground transition-all text-sm font-medium group/btn"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <Github size={16} />
                     Code
                     <ArrowUpRight size={14} className="opacity-0 -translate-x-2 group-hover/btn:opacity-100 group-hover/btn:translate-x-0 transition-all" />
-                  </button>
-                  <button className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl gradient-bg-accent text-accent-foreground hover:opacity-90 transition-all text-sm font-medium group/btn">
+                  </motion.button>
+                  <motion.button 
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl gradient-bg-accent text-accent-foreground hover:opacity-90 transition-all text-sm font-medium"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
                     <ExternalLink size={16} />
                     Demo
-                  </button>
+                  </motion.button>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

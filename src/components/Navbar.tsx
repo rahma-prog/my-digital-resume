@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X, Sparkles, Download } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
   { name: "À propos", href: "#about" },
@@ -22,7 +23,10 @@ const Navbar = () => {
   }, []);
 
   return (
-    <nav
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled 
           ? "bg-background/80 backdrop-blur-xl shadow-lg border-b border-border/50" 
@@ -42,18 +46,31 @@ const Navbar = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-10">
-            {navLinks.map((link) => (
-              <a key={link.name} href={link.href} className="nav-link">
+            {navLinks.map((link, index) => (
+              <motion.a 
+                key={link.name} 
+                href={link.href} 
+                className="nav-link"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 * index, duration: 0.5 }}
+              >
                 {link.name}
-              </a>
+              </motion.a>
             ))}
           </div>
 
-          <div className="hidden md:block">
-            <a href="#contact" className="btn-primary">
-              Me contacter
+          <motion.div 
+            className="hidden md:block"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
+          >
+            <a href="/CV_Rahma_Bouzguenda.pdf" download className="btn-primary">
+              <Download size={18} />
+              Télécharger CV
             </a>
-          </div>
+          </motion.div>
 
           {/* Mobile Menu Button */}
           <button
@@ -66,33 +83,46 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Navigation */}
-        <div className={`md:hidden overflow-hidden transition-all duration-500 ease-out ${
-          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
-        }`}>
-          <div className="py-6 space-y-2 border-t border-border/50">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="block px-4 py-3 rounded-xl text-foreground hover:bg-secondary transition-colors font-medium"
-                onClick={() => setIsOpen(false)}
-              >
-                {link.name}
-              </a>
-            ))}
-            <div className="pt-4 px-4">
-              <a 
-                href="#contact" 
-                className="btn-primary w-full text-center" 
-                onClick={() => setIsOpen(false)}
-              >
-                Me contacter
-              </a>
-            </div>
-          </div>
-        </div>
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="md:hidden overflow-hidden"
+            >
+              <div className="py-6 space-y-2 border-t border-border/50">
+                {navLinks.map((link, index) => (
+                  <motion.a
+                    key={link.name}
+                    href={link.href}
+                    className="block px-4 py-3 rounded-xl text-foreground hover:bg-secondary transition-colors font-medium"
+                    onClick={() => setIsOpen(false)}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.05 * index }}
+                  >
+                    {link.name}
+                  </motion.a>
+                ))}
+                <div className="pt-4 px-4">
+                  <a 
+                    href="/CV_Rahma_Bouzguenda.pdf" 
+                    download
+                    className="btn-primary w-full text-center" 
+                    onClick={() => setIsOpen(false)}
+                  >
+                    <Download size={18} />
+                    Télécharger CV
+                  </a>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 
