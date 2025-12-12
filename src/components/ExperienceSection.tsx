@@ -1,4 +1,6 @@
 import { Briefcase, GraduationCap, Calendar } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
 const experiences = [
   {
@@ -47,34 +49,62 @@ const education = [
 ];
 
 const ExperienceSection = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   return (
-    <section id="experience" className="py-24 lg:py-32 relative overflow-hidden">
+    <section id="experience" className="py-24 lg:py-32 relative overflow-hidden" ref={ref}>
       <div className="section-container relative z-10">
-        <div className="text-center mb-16">
+        <motion.div 
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
           <div className="section-badge inline-flex">Parcours</div>
           <h2 className="section-title">
             Expérience & <span className="gradient-text">Formation</span>
           </h2>
           <div className="section-divider" />
-        </div>
+        </motion.div>
 
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-20">
           {/* Experience */}
           <div>
-            <div className="flex items-center gap-4 mb-10">
+            <motion.div 
+              className="flex items-center gap-4 mb-10"
+              initial={{ opacity: 0, x: -30 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               <div className="icon-box">
                 <Briefcase className="w-5 h-5 text-primary-foreground" />
               </div>
               <h3 className="font-heading text-2xl font-bold">Expérience Professionnelle</h3>
-            </div>
+            </motion.div>
 
             <div className="relative pl-8 space-y-8">
-              <div className="timeline-modern" />
+              <motion.div 
+                className="timeline-modern"
+                initial={{ scaleY: 0 }}
+                animate={isInView ? { scaleY: 1 } : {}}
+                transition={{ duration: 1, delay: 0.3 }}
+                style={{ originY: 0 }}
+              />
               
               {experiences.map((exp, index) => (
-                <div key={index} className="relative group">
+                <motion.div 
+                  key={index} 
+                  className="relative group"
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.6, delay: 0.4 + index * 0.2 }}
+                >
                   <div className="timeline-dot-modern top-6" />
-                  <div className="card-modern p-6">
+                  <motion.div 
+                    className="card-modern p-6"
+                    whileHover={{ x: 5 }}
+                  >
                     <div className="flex flex-wrap items-center gap-3 mb-3">
                       <h4 className="font-heading font-semibold text-lg">{exp.title}</h4>
                       <span className="text-primary font-medium text-sm">@ {exp.company}</span>
@@ -91,28 +121,48 @@ const ExperienceSection = () => {
                         </li>
                       ))}
                     </ul>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
               ))}
             </div>
           </div>
 
           {/* Education */}
           <div>
-            <div className="flex items-center gap-4 mb-10">
+            <motion.div 
+              className="flex items-center gap-4 mb-10"
+              initial={{ opacity: 0, x: 30 }}
+              animate={isInView ? { opacity: 1, x: 0 } : {}}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
               <div className="icon-box-accent">
                 <GraduationCap className="w-5 h-5 text-accent-foreground" />
               </div>
               <h3 className="font-heading text-2xl font-bold">Formation</h3>
-            </div>
+            </motion.div>
 
             <div className="relative pl-8 space-y-6">
-              <div className="timeline-modern" />
+              <motion.div 
+                className="timeline-modern"
+                initial={{ scaleY: 0 }}
+                animate={isInView ? { scaleY: 1 } : {}}
+                transition={{ duration: 1, delay: 0.3 }}
+                style={{ originY: 0 }}
+              />
               
               {education.map((edu, index) => (
-                <div key={index} className="relative group">
+                <motion.div 
+                  key={index} 
+                  className="relative group"
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={isInView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.6, delay: 0.4 + index * 0.15 }}
+                >
                   <div className="timeline-dot-modern top-6" />
-                  <div className="card-modern p-6">
+                  <motion.div 
+                    className="card-modern p-6"
+                    whileHover={{ x: 5 }}
+                  >
                     <div className="flex items-start justify-between gap-4 mb-2">
                       <h4 className="font-heading font-semibold">{edu.degree}</h4>
                       <span className={`text-xs px-3 py-1 rounded-full font-medium whitespace-nowrap ${
@@ -128,8 +178,8 @@ const ExperienceSection = () => {
                       <Calendar size={14} />
                       {edu.period}
                     </div>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
               ))}
             </div>
           </div>
